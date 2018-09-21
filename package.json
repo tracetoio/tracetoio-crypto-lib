@@ -12,7 +12,7 @@
   },
   "author": "",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/traceto/utility_crypto#readme",
+  "homepage": "https://docs.traceto.io",
   "dependencies": {
     "aes256": "^1.0.4",
     "chai": "^4.1.2",

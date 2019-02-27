@@ -1,14 +1,14 @@
 const crypto = require('crypto');
 const ecies = require("eth-ecies");
 const secrets = require('secret-sharing.js');
-const ipfsAPI = require('ipfs-api');
+const ipfsClient = require('ipfs-http-client');
 const eutil = require('ethereumjs-util');
 const aes256 = require('aes256');
 
 class traceto_crypto{
 
   constructor(ipfs_url = {host: 'ipfs.alpha.traceto.io', port: '443', protocol: 'https'}){
-    this.ipfs = ipfsAPI(ipfs_url);
+    this.ipfs = ipfsClient(ipfs_url);
   }
 
   GeneratePassphrase(len){

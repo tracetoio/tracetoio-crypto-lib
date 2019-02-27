@@ -16,57 +16,46 @@ class traceto_crypto{
   }
 
   setPassphraseForWeb(seed, callback){
-    try{
-      secrets.init(8, "browserSJCLRandom");
-      secrets.seedRNG(seed, 1024, "randomorg");
-      const passPhrase = secrets.random(512);
-      return callback(null, passPhrase);
-    }
-    catch(err){
-      return callback(err, null);
-    }
+    return new Promise(function(resolve, reject) {
+      try{
+        secrets.init(8, "browserSJCLRandom");
+        secrets.seedRNG(seed, 1024, "randomorg");
+        const passPhrase = secrets.random(512);
+        return resolve(passPhrase);
+      }
+      catch(err){
+        return reject(err);
+      }
+    });
   }
 
   getPassphrase(){
     return this.passPhrase;
   }
 
-  uploadToIPFS(data, _passPhrase, callback){
+  uploadToIPFS(data, _passPhrase){
     let dataE = this.AES256(_passPhrase, data);
-    let files = [
-    {
+    let files = [{
       path: '/'+this.SHA512(dataE),
       content: new Buffer(this.Str2Hex(dataE),'hex')
-    }
-    ]
-    if(callback)
-      this.ipfs.files.add(files, callback);
-    else
-      return this.ipfs.files.add(files)
+    }]
+    return this.ipfs.files.add(files);
   }
 
-  uploadToIPFSNoEncrypt(data, callback){
-    let files = [
-    {
+  uploadToIPFSNoEncrypt(data){
+    let files = [{
       path: '/'+this.SHA512(data),
       content: new Buffer(data,'utf8')
-    }
-    ]
-    if(callback)
-      this.ipfs.files.add(files, callback);
-    else
-      return this.ipfs.files.add(files)
+    }]
+    return this.ipfs.files.add(files);
   }
 
-  getFromIPFS(url, callback){
-    if(callback)
-      this.ipfs.files.cat(url,callback);
-    else
-      return this.ipfs.files.cat(url);
+  getFromIPFS(url){
+    return this.ipfs.files.cat(url);
   }
- 
+
   AES256(pp, dataE){
-   return aes256.encrypt(pp, dataE);
+    return aes256.encrypt(pp, dataE);
   }
 
   DeAES256(pp, dataE){

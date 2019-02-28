@@ -39,7 +39,7 @@ class traceto_crypto{
       path: '/'+this.SHA512(dataE),
       content: new Buffer(this.Str2Hex(dataE),'hex')
     }]
-    return this.ipfs.files.add(files);
+    return this.ipfs.add(files);
   }
 
   uploadToIPFSNoEncrypt(data){
@@ -47,11 +47,11 @@ class traceto_crypto{
       path: '/'+this.SHA512(data),
       content: new Buffer(data,'utf8')
     }]
-    return this.ipfs.files.add(files);
+    return this.ipfs.add(files);
   }
 
   getFromIPFS(url){
-    return this.ipfs.files.cat(url);
+    return this.ipfs.cat(url);
   }
 
   AES256(pp, dataE){

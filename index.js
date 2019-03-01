@@ -15,7 +15,7 @@ class traceto_crypto{
     this.passPhrase = secrets.random(len);
   }
 
-  setPassphraseForWeb(seed, callback){
+  setPassphraseForWeb(seed){
     return new Promise(function(resolve, reject) {
       try{
         secrets.init(8, "browserSJCLRandom");

@@ -1,6 +1,6 @@
 {
   "name": "tracetoio-crypto-lib",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A utility library for the various crypto functions used in traceto.io",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "chai": "^4.1.2",
     "eth-ecies": "^1.0.3",
     "ethereumjs-util": "^5.2.0",
-    "ipfs-api": "^24.0.1",
+    "ipfs-http-client": "^29.1.1",
     "is-hex": "^1.1.3",
     "safe-buffer": "^5.1.2",
     "secret-sharing.js": "^1.3.1"

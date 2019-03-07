@@ -1,72 +1,61 @@
 const crypto = require('crypto');
 const ecies = require("eth-ecies");
 const secrets = require('secret-sharing.js');
-const ipfsAPI = require('ipfs-api');
+const ipfsClient = require('ipfs-http-client');
 const eutil = require('ethereumjs-util');
 const aes256 = require('aes256');
 
 class traceto_crypto{
 
   constructor(ipfs_url = {host: 'ipfs.alpha.traceto.io', port: '443', protocol: 'https'}){
-    this.ipfs = ipfsAPI(ipfs_url);
+    this.ipfs = ipfsClient(ipfs_url);
   }
 
   GeneratePassphrase(len){
     this.passPhrase = secrets.random(len);
   }
 
-  setPassphraseForWeb(seed, callback){
-    try{
-      secrets.init(8, "browserSJCLRandom");
-      secrets.seedRNG(seed, 1024, "randomorg");
-      const passPhrase = secrets.random(512);
-      return callback(null, passPhrase);
-    }
-    catch(err){
-      return callback(err, null);
-    }
+  setPassphraseForWeb(seed){
+    return new Promise(function(resolve, reject) {
+      try{
+        secrets.init(8, "browserSJCLRandom");
+        secrets.seedRNG(seed, 1024, "randomorg");
+        const passPhrase = secrets.random(512);
+        return resolve(passPhrase);
+      }
+      catch(err){
+        return reject(err);
+      }
+    });
   }
 
   getPassphrase(){
     return this.passPhrase;
   }
 
-  uploadToIPFS(data, _passPhrase, callback){
+  uploadToIPFS(data, _passPhrase){
     let dataE = this.AES256(_passPhrase, data);
-    let files = [
-    {
+    let files = [{
       path: '/'+this.SHA512(dataE),
       content: new Buffer(this.Str2Hex(dataE),'hex')
-    }
-    ]
-    if(callback)
-      this.ipfs.files.add(files, callback);
-    else
-      return this.ipfs.files.add(files)
+    }]
+    return this.ipfs.add(files);
   }
 
-  uploadToIPFSNoEncrypt(data, callback){
-    let files = [
-    {
+  uploadToIPFSNoEncrypt(data){
+    let files = [{
       path: '/'+this.SHA512(data),
       content: new Buffer(data,'utf8')
-    }
-    ]
-    if(callback)
-      this.ipfs.files.add(files, callback);
-    else
-      return this.ipfs.files.add(files)
+    }]
+    return this.ipfs.add(files);
   }
 
-  getFromIPFS(url, callback){
-    if(callback)
-      this.ipfs.files.cat(url,callback);
-    else
-      return this.ipfs.files.cat(url);
+  getFromIPFS(url){
+    return this.ipfs.cat(url);
   }
- 
+
   AES256(pp, dataE){
-   return aes256.encrypt(pp, dataE);
+    return aes256.encrypt(pp, dataE);
   }
 
   DeAES256(pp, dataE){
